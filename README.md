@@ -168,4 +168,4 @@ Advisor: Anjali Wahi, awahi@pcti.tec.nj.us
 
 ## License
 
-[Add a license here, e.g. MIT]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
