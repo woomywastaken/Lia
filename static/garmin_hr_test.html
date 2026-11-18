@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Watch heart rate test</title>
+<style>body{font:16px/1.5 system-ui,sans-serif;background:#111113;color:#eceef1;max-width:560px;margin:40px auto;padding:0 20px}
+button{font:inherit;padding:12px 20px;border-radius:12px;border:0;background:#eceef1;color:#111;font-weight:600;cursor:pointer}
+#bpm{font-size:88px;font-weight:300;margin:18px 0 0;font-variant-numeric:tabular-nums}small{color:#9a9ea6}
+#log{font:13px/1.6 ui-monospace,monospace;color:#9a9ea6;margin-top:18px;white-space:pre-wrap}ol{color:#c9ccd2}</style></head><body>
+<h1>Watch heart rate test</h1>
+<ol><li>On the watch, turn on <b>Broadcast Heart Rate</b> (in the watch's heart-rate or sensor settings; the exact menu depends on the model).</li>
+<li>Click Connect, pick your watch in the list, and wait a few seconds.</li></ol>
+<button id="c">Connect watch</button>
+<p id="bpm">--</p><small>beats per minute, live from your watch over Bluetooth. Nothing leaves this computer.</small>
+<div id="log"></div>
+<script>
+const log=m=>{const l=document.getElementById("log");l.textContent=new Date().toLocaleTimeString()+"  "+m+"\n"+l.textContent};
+document.getElementById("c").onclick=async()=>{
+  if(!navigator.bluetooth){log("This browser has no Web Bluetooth. Use Microsoft Edge or Google Chrome, opened at http://127.0.0.1:8000");return}
+  try{
+    const dev=await navigator.bluetooth.requestDevice({filters:[{services:["heart_rate"]}]});
+    log("Chosen: "+(dev.name||"unnamed device"));
+    dev.addEventListener("gattserverdisconnected",()=>{document.getElementById("bpm").textContent="--";log("Disconnected")});
+    const srv=await dev.gatt.connect(),svc=await srv.getPrimaryService("heart_rate"),ch=await svc.getCharacteristic("heart_rate_measurement");
+    await ch.startNotifications();
+    ch.addEventListener("characteristicvaluechanged",e=>{
+      const v=e.target.value,flags=v.getUint8(0),bpm=(flags&1)?v.getUint16(1,true):v.getUint8(1);
+      document.getElementById("bpm").textContent=bpm;
+    });
+    log("Connected. Waiting for readings...");
+  }catch(e){log("Could not connect: "+e.message+" (Is Broadcast Heart Rate on? Is the watch already connected to a phone app that blocks it?)")}
+};
+</script></body></html>

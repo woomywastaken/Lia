@@ -1,0 +1,7 @@
+venv/
+models/
+logs/
+lia_window/
+dist/
+build/
+__pycache__/crew_faces.json
