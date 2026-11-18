@@ -81,8 +81,6 @@ pip install kokoro-onnx        # natural voice
 pip install opencv-python numpy  # face sign-in
 ```
 
-> There is no `requirements.txt` yet. The package list above comes from the imports in the code, so adjust it if something is missing.
-
 ### 3. Download the optional model files (once, while online)
 
 ```bat
@@ -111,8 +109,6 @@ or `python lia_app.py`. Lia starts a server on this computer and opens in its ow
 build_exe.bat          :: dist\Lia.exe + dist\models (starts fast, recommended)
 build_exe.bat single   :: models packed inside one big .exe (slow to start)
 ```
-
-Build on Windows with the same Python you run Lia with. Hand in the whole `dist` folder.
 
 ## Configuration
 
@@ -156,20 +152,6 @@ Main server routes: `/health`, `/session`, `/reply`, `/results`, `/photo`, `/ana
 - Test larger medical models and compare against MedGemma.
 - Clinician-written safety rules.
 - More independent test cases.
-
-## Suggested `.gitignore`
-
-```
-venv/
-models/
-logs/
-lia_window/
-dist/
-build/
-__pycache__/
-```
-
-`lia_window/` is the app window's browser profile (cache, saved permissions) and should not be committed.
 
 ## Team
 
